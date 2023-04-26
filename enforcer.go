@@ -17,12 +17,12 @@ package casbin
 import (
 	"errors"
 	"fmt"
-	"github.com/casbin/casbin/v2/constant"
 	"runtime/debug"
 	"strings"
 	"sync"
 
 	"github.com/Knetic/govaluate"
+	"github.com/casbin/casbin/v2/constant"
 	"github.com/casbin/casbin/v2/effector"
 	"github.com/casbin/casbin/v2/log"
 	"github.com/casbin/casbin/v2/model"
