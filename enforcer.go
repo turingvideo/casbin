@@ -17,6 +17,7 @@ package casbin
 import (
 	"errors"
 	"fmt"
+	"github.com/casbin/casbin/v2/constant"
 	"runtime/debug"
 	"strings"
 	"sync"
@@ -634,10 +635,24 @@ func (e *Enforcer) enforce(matcher string, explains *[]string, rvals ...interfac
 			//	break
 			//}
 
-			effect, explainIndex, err = e.eft.MergeEffects(e.model["e"][eType].Value, policyEffects, matcherResults, policyIndex, policyLen)
-			if err != nil {
-				return false, err
+			effect = effector.Indeterminate
+			explainIndex = -1
+
+			var expr = e.model["e"][eType].Value
+			if matcherResults[policyIndex] != 0 && expr == constant.AllowOverrideEffect {
+				// only check the current policyIndex
+				if policyEffects[policyIndex] == effector.Allow {
+					effect = effector.Allow
+					explainIndex = policyIndex
+					break
+				}
+			} else {
+				effect, explainIndex, err = e.eft.MergeEffects(e.model["e"][eType].Value, policyEffects, matcherResults, policyIndex, policyLen)
+				if err != nil {
+					return false, err
+				}
 			}
+
 			if effect != effector.Indeterminate {
 				break
 			}
