@@ -594,6 +594,12 @@ func (e *Enforcer) enforce(matcher string, explains *[]string, rvals ...interfac
 					pvals)
 			}
 
+			if len(rvals) == 4 && strings.HasPrefix(rvals[1].(string), "org_") {
+				if rvals[1] != pvals[1] {
+					continue
+				}
+			}
+
 			parameters.pVals = pvals
 
 			result, err := expression.Eval(parameters)
@@ -647,7 +653,7 @@ func (e *Enforcer) enforce(matcher string, explains *[]string, rvals ...interfac
 					break
 				}
 			} else {
-				effect, explainIndex, err = e.eft.MergeEffects(e.model["e"][eType].Value, policyEffects, matcherResults, policyIndex, policyLen)
+				effect, explainIndex, err = e.eft.MergeEffects(expr, policyEffects, matcherResults, policyIndex, policyLen)
 				if err != nil {
 					return false, err
 				}
